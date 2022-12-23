@@ -1,0 +1,1 @@
+e0015b0fd3bf98eed3176ed81587cd196c67340d2601dbd1a511909d42230465  ./target/wasm32-unknown-unknown/release/kujira_denom_minter.wasm

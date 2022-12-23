@@ -1,0 +1,1 @@
+281e035cfb199b87e240051b8a7276005c65857ea492f826fc7133dff0a21c89  kujira_denom_minter.wasm
