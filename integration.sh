@@ -18,15 +18,31 @@ JSON=\''{"admin": "'"$KEY_ADDR"'", "nonce": "'"$TOKEN"'"}'\'
 NONCE="token-${CODE_ID}"
 JSON='{"admin": "'"$KEY_ADDR"'", "nonce": "'"$NONCE"'"}'
 if [ -z "$ADDR" ]; then
-# Instantiate contract
-TX_INIT=$(kujirad tx wasm instantiate $CODE_ID "$JSON" --label kujira-denom-wrapper --amount 100000000ukuji --admin $KEY_ADDR $GAS --from $KEY --keyring-backend test | jq -r '.txhash') && echo $TX_INIT
-sleep 1
-ADDR=$(kujirad query tx $TX_INIT --output json | jq -r '.logs[0].events[0].attributes[0].value') && echo "Contract Address: $ADDR"
-sleep 1
+    # Instantiate contract
+    TX_INIT=$(kujirad tx wasm instantiate $CODE_ID "$JSON" --label kujira-denom-wrapper --amount 100000000ukuji --admin $KEY_ADDR $GAS --from $KEY --keyring-backend test | jq -r '.txhash') && echo $TX_INIT
+    sleep 1
+    ADDR=$(kujirad query tx $TX_INIT --output json | jq -r '.logs[0].events[0].attributes[0].value') && echo "Contract Address: $ADDR"
+    sleep 1
 fi
 DENOM="factory/$ADDR/token-$CODE_ID"
 echo "Denom Created: $DENOM"
 # Mint 12M Tokens to Self
+echo "Minting 12M Tokens to Self"
 TX_MINT=$(kujirad tx wasm execute $ADDR '{"kujira_denom_msg":{"mint": {"recipient": "'"$KEY_ADDR"'", "amount": "1200000000", "denom": "'"$DENOM"'"}}}' $GAS --from $KEY --keyring-backend test | jq -r '.txhash') && echo $TX_MINT
 # Query Balance of Self
+echo "Querying Balance of Self"
 BALANCE=$(kujirad query bank balances $KEY_ADDR --denom $DENOM --output json | jq -r '.amount') && echo "Balance: $BALANCE"
+# Upade admin of the contract to None
+echo "Updating Admin to None"
+TX_UPDATE=$(kujirad tx wasm execute $ADDR '{"update_admin": {"admin": null}}' $GAS --from $KEY --keyring-backend test | jq -r '.txhash') && echo $TX_UPDATE
+# Try to Mint Again
+echo "Trying to Mint Again"
+TX_MINT=$(kujirad tx wasm execute $ADDR '{"kujira_denom_msg":{"mint": {"recipient": "'"$KEY_ADDR"'", "amount": "1200000000", "denom": "'"$DENOM"'"}}}' $GAS --from $KEY --keyring-backend test | jq -r '.txhash') && echo $TX_MINT
+# Check that the mint failed
+echo "Checking that the mint failed"
+TX_MINT=$(kujirad query tx $TX_MINT --output json | grep error) && echo $TX_MINT
+# Query Balance of Self
+echo "Querying Balance of Self"
+OLD_BALANCE=$BALANCE
+BALANCE=$(kujirad query bank balances $KEY_ADDR --denom $DENOM --output json | jq -r '.amount') && echo "Balance: $BALANCE"
+echo "Old Balance: $OLD_BALANCE, New Balance: $BALANCE"
