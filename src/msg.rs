@@ -10,6 +10,7 @@ pub struct InstantiateMsg {
 #[cw_serde]
 pub enum ExecuteMsg {
     KujiraDenomMsg(kujira::msg::DenomMsg),
+    UpdateAdmin { admin: Option<Addr> },
 }
 
 #[cw_serde]

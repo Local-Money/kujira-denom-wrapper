@@ -3,11 +3,11 @@ use cw_storage_plus::Item;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-// Define a Config struct with the admin address
+// Define an Admin struct with the admin address
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct Config {
-    pub admin: Addr,
+pub struct Admin {
+    pub addr: Addr,
 }
 
-// Create a storage Item for the Config struct
-pub const CONFIG: Item<Config> = Item::new("config");
+// Create a storage Item for the Admin struct
+pub const ADMIN: Item<Admin> = Item::new("admin");

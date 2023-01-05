@@ -1,5 +1,5 @@
 [package]
-name = "kujira-denom-minter"
+name = "kujira-denom-wrapper"
 version = "0.1.0"
 authors = ["Sam B <sambarbosaa@gmail.com>"]
 edition = "2021"
