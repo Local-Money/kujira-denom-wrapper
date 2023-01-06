@@ -1,6 +1,6 @@
 use cosmwasm_schema::write_api;
 
-use kujira_denom_minter::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use kujira_denom_wrapper::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {
